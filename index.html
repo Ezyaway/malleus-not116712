@@ -38,7 +38,6 @@
 </head>
 <body>
 
-    <!-- Controle de Volume -->
     <div class="volume-control">
         <label for="volume">Volume:</label>
         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
@@ -54,7 +53,7 @@
             { text: "vi um grupo de viajantes chegando à cidade hoje. pareciam estar carregando especiarias.", rarity: 0.5 },
             { text: "o feriado está chegando. alguém sabe se vai ter festa na praça principal?", rarity: 0.5 },
             { text: "o vinho desta safra está excelente. recomendo a todos experimentarem.", rarity: 0.5 },
-            { text: "o tempo está tão frio ultimamente. alguém mais está sentindo?", rarity: 0.5 },
+            { text: "o tempo está tão quente ultimamente. alguém mais está sentindo?", rarity: 0.5 },
             { text: "alguém sabe se o ferreiro está aceitando encomendas novas?", rarity: 0.5 },
             { text: "o mercado de tecidos está com promoção esta semana. vale a pena dar uma olhada.", rarity: 0.5 },
             { text: "a festa de aniversário da minha filha será no próximo fim de semana. todos estão convidados!", rarity: 0.5 },
@@ -79,11 +78,11 @@
             { text: "todos que vão contra a igreja devem ser mortos.", rarity: 0.8 },
             { text: "dizem que um pássaro raro foi avistado perto do rio.", rarity: 0.1 },
             { text: "ouvi dizer que um viajante trouxe uma fruta exótica para a cidade.", rarity: 0.1 },
-            { text: "alguém sabe por que o sino da igreja tocou sozinho ontem à noite?", rarity: 0.1 },
+            { text: "alguém sabe por que o sino da igrejaa tocou sozinho ontem à noite?", rarity: 0.1 },
             { text: "dizem que há uma fonte escondida na floresta que nunca seca.", rarity: 0.1 },
             { text: "encontrei um livro antigo no sótão da minha casa. tem símbolos estranhos nas páginas.", rarity: 0.04 },
             { text: "encontrei uma carta antiga dentro de um livro na biblioteca. está escrita em uma língua estranha.", rarity: 0.05 },
-            { text: "alguém mais notou que os sinos da igreda tocam sozinhos às vezes?", rarity: 0.1 },
+            { text: "alguém mais notou que os sinos da igreja tocam sozinhos às vezes?", rarity: 0.1 },
             { text: "tem um lugar na floresta onde os pássaros não cantam.", rarity: 0.007 },
             { text: "você viu oque estão falando da família Galanis? pelo visto tem uma herege por lá.", rarity: 0.2 },
             { text: "lembra daquela organização que matou o bispo? ela está ainda pior ultimamente.", rarity: 0.1 },
@@ -108,15 +107,15 @@
             { text: "o meteorito parece ter deixado vários rastros de princípio caótico pelo local.", rarity: 0.002 },
         ];
 
-        let soundVolume = 0.5; // Volume inicial do efeito sonoro
+        let soundVolume = 0.5;
 
-        // Atualizar volume conforme controle deslizante
         document.getElementById("volume").addEventListener("input", function() {
             soundVolume = this.value;
         });
 
-        function playMessageSound() {
-            const soundEffect = new Audio('cmaj7.mp3'); // Caminho do efeito sonoro
+        function playMessageSound(rarity) {
+            const soundFile = rarity < 0.4 ? 'tntf2.mp3' : 'tntf1.mp3';
+            const soundEffect = new Audio(soundFile);
             soundEffect.volume = soundVolume;
             soundEffect.play();
         }
@@ -130,8 +129,8 @@
                 for (let msg of messages) {
                     cumulative += msg.rarity;
                     if (rand < cumulative) {
-                        if (!selectedMessages.includes(msg.text)) {
-                            selectedMessages.push(msg.text);
+                        if (!selectedMessages.includes(msg)) {
+                            selectedMessages.push(msg);
                         }
                         break;
                     }
@@ -147,10 +146,10 @@
             if (existingMessages >= maxMessages) return;
 
             let messagesToShow = getRandomMessages(1);
-            messagesToShow.forEach(messageText => {
+            messagesToShow.forEach(selectedMessage => {
                 const messageElement = document.createElement("div");
                 messageElement.classList.add("message");
-                messageElement.textContent = messageText;
+                messageElement.textContent = selectedMessage.text;
 
                 document.body.appendChild(messageElement);
 
@@ -160,7 +159,7 @@
                 messageElement.style.top = `${y}px`;
 
                 setTimeout(() => { messageElement.style.opacity = 1; }, 100);
-                playMessageSound(); // Toca o som ao exibir a mensagem
+                playMessageSound(selectedMessage.rarity);
 
                 setTimeout(() => { 
                     messageElement.style.opacity = 0; 
@@ -175,10 +174,7 @@
             });
         }
 
-        // Primeira mensagem aparece rapidamente
         setTimeout(showMessage, Math.random() * 3000 + 1000);
-
-        // Garante que novas mensagens apareçam aleatoriamente
         setInterval(() => {
             if (document.querySelectorAll('.message').length < 3) {
                 showMessage();
