@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malleus Notícias</title>
+    <style>
+        @font-face {
+            font-family: 'Poppl Fraktur CAT';
+            src: url('PopplFrakturCAT-Regular.woff2') format('woff2');
+        }
+        body {
+            background-color: #3b2f2f;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            position: relative;
+        }
+        .message {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            font-family: 'Poppl Fraktur CAT', serif;
+            font-size: 24px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .volume-control {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Controle de Volume -->
+    <div class="volume-control">
+        <label for="volume">Volume:</label>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+    </div>
+
+    <script>
+        const messages = [
+            { text: "dizem que a igreja está oferecendo recompensas para quem denunciar hereges. cuidado com o que falam pelas redondezas.", rarity: 0.5 },
+            { text: "você soube? o jean herreira foi morto. pelo o que dizem foi mais um assassinato daquele grupo bizarro.", rarity: 0.1 },
+            { text: "estão dizendo que as mortes da re; fuerza estão aumentando progressivamente.", rarity: 0.08 },
+            { text: "o pão de forno do senhor martínez está cada vez melhor. alguém já experimentou o novo lote?", rarity: 0.4 },
+            { text: "o rio está mais cheio essa semana. será que vai chover de novo?", rarity: 0.5 },
+            { text: "vi um grupo de viajantes chegando à cidade hoje. pareciam estar carregando especiarias.", rarity: 0.5 },
+            { text: "o feriado está chegando. alguém sabe se vai ter festa na praça principal?", rarity: 0.5 },
+            { text: "o vinho desta safra está excelente. recomendo a todos experimentarem.", rarity: 0.5 },
+            { text: "o tempo está tão quente ultimamente. alguém mais está sentindo?", rarity: 0.5 },
+            { text: "alguém sabe se o ferreiro está aceitando encomendas novas?", rarity: 0.5 },
+            { text: "o mercado de tecidos está com promoção esta semana. vale a pena dar uma olhada.", rarity: 0.5 },
+            { text: "a festa de aniversário da minha filha será no próximo fim de semana. todos estão convidados!", rarity: 0.5 },
+            { text: "a nova peça de teatro na praça está um sucesso.", rarity: 0.5 },
+            { text: "dizem que o novo padre da igreja é muito bom com as crianças.", rarity: 0.5 },
+            { text: "o vento está forte hoje. cuidado com os telhados soltos!", rarity: 0.5 },
+            { text: "as uvas estão maduras.", rarity: 0.5 },
+            { text: "o chá de camomila da senhora Maria é ótimo para acalmar os nervos.", rarity: 0.5 },
+            { text: "alguém conhece a história daquela estátua na praça central?", rarity: 0.5 },
+            { text: "a lenda do fantasma da mansão antiga é verdadeira? alguém já viu algo?", rarity: 0.5 },
+            { text: "a ponte sobre o rio está em reformas. melhor pegar outro caminho.", rarity: 0.5 },
+            { text: "um diácono da inquisição vai dar uma notícia em alguns dias.", rarity: 0.5 },
+            { text: "o inquisidor-chefe, frei alonso de ribeira vai dar uma apresentação em público em alguns dias.", rarity: 0.5 },
+            { text: "parecem ter visto alguém vagando pelo alto dos vales.", rarity: 0.5 },
+            { text: "aquele grupo de assassinos aparenta estar aumentando cada vez mais, eles se chamam de 're; fuerza'.", rarity: 0.5 },
+            { text: "vai ter uma orquestra nesse domingo.", rarity: 0.5 },
+            { text: "parece que as construções no sul da cidade foram interrompidas.", rarity: 0.5 },
+            { text: "preciso de ajuda para consertar o telhado.", rarity: 0.5 },
+            { text: "alguém sabe se o rio está bom para pescar hoje? estou com vontade de pegar algo fresco.", rarity: 0.5 },
+            { text: "estão dizendo que teve uma infestação de larvas no norte da cidade.", rarity: 0.5 },
+            { text: "a família Galanis está sendo bastante comentada atualmente.", rarity: 0.5 },
+            { text: "todos que vão contra a igreja devem ser mortos.", rarity: 0.8 },
+            { text: "dizem que um pássaro raro foi avistado perto do rio.", rarity: 0.1 },
+            { text: "ouvi dizer que um viajante trouxe uma fruta exótica para a cidade.", rarity: 0.1 },
+            { text: "alguém sabe por que o sino da igrada tocou sozinho ontem à noite?", rarity: 0.1 },
+            { text: "dizem que há uma fonte escondida na floresta que nunca seca.", rarity: 0.1 },
+            { text: "encontrei um livro antigo no sótão da minha casa. tem símbolos estranhos nas páginas.", rarity: 0.04 },
+            { text: "encontrei uma carta antiga dentro de um livro na biblioteca. está escrita em uma língua estranha.", rarity: 0.05 },
+            { text: "alguém mais notou que os sinos da igreda tocam sozinhos às vezes?", rarity: 0.1 },
+            { text: "tem um lugar na floresta onde os pássaros não cantam.", rarity: 0.007 },
+            { text: "você viu oque estão falando da família Galanis? pelo visto tem uma herege por lá.", rarity: 0.2 },
+            { text: "lembra daquela organização que matou o bispo? ela está ainda pior ultimamente.", rarity: 0.1 },
+            { text: "estava passeando pelos vales até que encontrei um local bem calmo, é bom para descansar.", rarity: 0.1 },
+            { text: "pelo oque eu vi, esse grupo de viajantes na cidade parecem serem hereges. vou denunciar para a igreja o quanto antes.", rarity: 0.02 },
+            { text: "ouvi dizer que a inquisição está falhando bastante em conseguir informações sobre a re; fuerza", rarity: 0.1 },
+            { text: "estão falando de alguma sabotagem no vinhedo da cidade, não sei muito bem.", rarity: 0.07 },
+            { text: "a igreja parece bastante preocupadas com essas mortes da re; fuerza.", rarity: 0.1 },
+            { text: "um dos viajantes que chegaram recentemente foi morto pela inquisição.", rarity: 0.1 },
+            { text: "você viu o ultimo quadro da rafaella que foi leiloado?", rarity: 0.03 },
+            { text: "ouvi que a santa inquisição está procurando a partitura de uma música, e está pagando alto para quem encontra-la", rarity: 0.005 },
+            { text: "ouvi um diácono falando sobre um ritual antigo que foi interrompido anos atrás. dizem que algo foi liberado naquela noite.", rarity: 0.003 },
+            { text: "alguém está espalhando símbolos estranhos pelas paredes da cidade.", rarity: 0.009 },
+            { text: "dizem que os Hereges estão se reunindo novamente. a cidade não está segura.", rarity: 0.01 },
+            { text: "você viu aquele homem com o violão fugindo da inquisição a noite?", rarity: 0.02 },
+            { text: "minha mãe foi morta injustamente pela santa inquisição. estou apoiando a re; fuerza, seus ideais são valiosos.", rarity: 0.05 },
+            { text: "já ouviu sobre a história do colheita? é uma lenda antiga de toledo", rarity: 0.002 },
+            { text: "a Inquisição não sabe, mas eles estão brincando com forças que não entendem. o Domínio não perdoa.", rarity: 0.002 },
+            { text: "o Princípio Temporal está se agitando. as espirais da morte estão mais próximas do que nunca...", rarity: 0.002 },
+            { text: "aqueles que buscam o conhecimento do Domínio serão consumidos por ele. cuidado com os sigilos que você encontra.", rarity: 0.002 },
+            { text: "já ouviu falar em como luzbelia morreu?", rarity: 0.002 },
+            { text: "o meteorito parece ter deixado vários rastros de princípio caótico pelo local.", rarity: 0.002 },
+        ];
+
+        let soundVolume = 0.5; // Volume inicial do efeito sonoro
+
+        // Atualizar volume conforme controle deslizante
+        document.getElementById("volume").addEventListener("input", function() {
+            soundVolume = this.value;
+        });
+
+        function playMessageSound() {
+            const soundEffect = new Audio('cmaj7.mp3'); // Caminho do efeito sonoro
+            soundEffect.volume = soundVolume;
+            soundEffect.play();
+        }
+
+        function getRandomMessages(count) {
+            let selectedMessages = [];
+            while (selectedMessages.length < count) {
+                let totalRarity = messages.reduce((sum, msg) => sum + msg.rarity, 0);
+                let rand = Math.random() * totalRarity;
+                let cumulative = 0;
+                for (let msg of messages) {
+                    cumulative += msg.rarity;
+                    if (rand < cumulative) {
+                        if (!selectedMessages.includes(msg.text)) {
+                            selectedMessages.push(msg.text);
+                        }
+                        break;
+                    }
+                }
+            }
+            return selectedMessages;
+        }
+
+        function showMessage() {
+            let existingMessages = document.querySelectorAll('.message').length;
+            let maxMessages = 3;
+
+            if (existingMessages >= maxMessages) return;
+
+            let messagesToShow = getRandomMessages(1);
+            messagesToShow.forEach(messageText => {
+                const messageElement = document.createElement("div");
+                messageElement.classList.add("message");
+                messageElement.textContent = messageText;
+
+                document.body.appendChild(messageElement);
+
+                let x = Math.random() * (window.innerWidth - 200);
+                let y = Math.random() * (window.innerHeight - 100);
+                messageElement.style.left = `${x}px`;
+                messageElement.style.top = `${y}px`;
+
+                setTimeout(() => { messageElement.style.opacity = 1; }, 100);
+                playMessageSound(); // Toca o som ao exibir a mensagem
+
+                setTimeout(() => { 
+                    messageElement.style.opacity = 0; 
+                    setTimeout(() => {
+                        messageElement.remove();
+                        if (document.querySelectorAll('.message').length < maxMessages) {
+                            let delay = Math.random() * 5000 + 2000;
+                            setTimeout(showMessage, delay);
+                        }
+                    }, 1000); 
+                }, 5000);
+            });
+        }
+
+        // Primeira mensagem aparece rapidamente
+        setTimeout(showMessage, Math.random() * 3000 + 1000);
+
+        // Garante que novas mensagens apareçam aleatoriamente
+        setInterval(() => {
+            if (document.querySelectorAll('.message').length < 3) {
+                showMessage();
+            }
+        }, Math.random() * 5000 + 3000);
+    </script>
+
+</body>
+</html>
