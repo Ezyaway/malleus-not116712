@@ -114,7 +114,7 @@
         });
 
         function playMessageSound(rarity) {
-            const soundFile = rarity < 0.3 ? 'tntf2.mp3' : 'tntf1.mp3';
+            const soundFile = rarity < 0.05 ? 'tntf2.mp3' : 'tntf1.mp3';
             const soundEffect = new Audio(soundFile);
             soundEffect.volume = soundVolume;
             soundEffect.play();
